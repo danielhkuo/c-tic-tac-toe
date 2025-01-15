@@ -62,14 +62,8 @@ int checkTurn(char c, int col) {
 
 }
 
-int checkWin(player p1, player p2)
+int checkWin(game g)
 {
-    for(int i = 0; i < 3; i++) {
-        if ((p1.cols[i] || p1.rows[i]) == 3) return 1;
-        if ((p2.cols[i] || p2.rows[i]) == 3) return 2;
-    }
-    if ((p1.diag[0]||p1.diag[1]) == 2) return 1;
-    if ((p2.diag[0]||p2.diag[1]) == 2) return 2;
     return 0;
 }
 
@@ -82,8 +76,6 @@ int main()
 {
     // Better initialization with clear structure
     game g = {{0,0,0}, {0,0,0}, {0,0,0}};
-    player p1 = {{0,0,0}, {0,0,0}, {0,0,0}};
-    player p2 = {{0,0,0}, {0,0,0}, {0,0,0}};
     int winner = 0;
     int count = 0;
     const char* set = "abcABC";  // Made const for safety
@@ -123,7 +115,7 @@ int main()
         // updateGame(&g, &p1, &p2, row_idx, col, curr);
 
         count++;
-        winner = checkWin(p1, p2);
+        winner = checkWin(g);
 
         // Check for draw condition
         if (count == 9 && !winner) {
