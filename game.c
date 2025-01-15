@@ -7,20 +7,7 @@ and learn a bit more syntax (because I really don't know anything)
 #include <stdlib.h>
 #include <string.h>
 
-/*
-p1 (x) p2 (o), represented as -1, 0, and 1
-
-Q: How do we alternate moves? 
-A: We keep a while loop and we break when a winner occurs.
-
-Q: How do we verify moves?
-A: Check the full game board to see it position is occupied
-
-Q: How do we check winner?
-A: At the end of each turn, we will run a checkWin function which will read player data to see if a win has been achieved
-*/
-
-/*
+/* ASCII Art Board Layout:
    0     1     2
       |     |     
 a  -  |  -  |  -  
@@ -37,22 +24,34 @@ typedef struct {
     int board[3][3];
 } game;
 
+/*
+ Check if there's a winner
+ Returns: 1 if Player 1 wins, 2 if Player 2 wins, 0 if no winner
+*/
 int checkWin(game g)
 {
     // Check rows
-    if (abs(g.board[0][0] + g.board[0][1] + g.board[0][2]) == 3) return 1;
-    if (abs(g.board[1][0] + g.board[1][1] + g.board[1][2]) == 3) return 1;
-    if (abs(g.board[2][0] + g.board[2][1] + g.board[2][2]) == 3) return 1;
-
+    if (g.board[0][0] + g.board[0][1] + g.board[0][2] == 3) return 1;
+    if (g.board[0][0] + g.board[0][1] + g.board[0][2] == -3) return 2;
+    if (g.board[1][0] + g.board[1][1] + g.board[1][2] == 3) return 1;
+    if (g.board[1][0] + g.board[1][1] + g.board[1][2] == -3) return 2;
+    if (g.board[2][0] + g.board[2][1] + g.board[2][2] == 3) return 1;
+    if (g.board[2][0] + g.board[2][1] + g.board[2][2] == -3) return 2;
+    
     // Check columns
-    if (abs(g.board[0][0] + g.board[1][0] + g.board[2][0]) == 3) return 1;
-    if (abs(g.board[0][1] + g.board[1][1] + g.board[2][1]) == 3) return 1;
-    if (abs(g.board[0][2] + g.board[1][2] + g.board[2][2]) == 3) return 1;
-
+    if (g.board[0][0] + g.board[1][0] + g.board[2][0] == 3) return 1;
+    if (g.board[0][0] + g.board[1][0] + g.board[2][0] == -3) return 2;
+    if (g.board[0][1] + g.board[1][1] + g.board[2][1] == 3) return 1;
+    if (g.board[0][1] + g.board[1][1] + g.board[2][1] == -3) return 2;
+    if (g.board[0][2] + g.board[1][2] + g.board[2][2] == 3) return 1;
+    if (g.board[0][2] + g.board[1][2] + g.board[2][2] == -3) return 2;
+    
     // Check diagonals
-    if (abs(g.board[0][0] + g.board[1][1] + g.board[2][2]) == 3) return 1;
-    if (abs(g.board[2][0] + g.board[1][1] + g.board[0][2]) == 3) return 1;
-
+    if (g.board[0][0] + g.board[1][1] + g.board[2][2] == 3) return 1;
+    if (g.board[0][0] + g.board[1][1] + g.board[2][2] == -3) return 2;
+    if (g.board[2][0] + g.board[1][1] + g.board[0][2] == 3) return 1;
+    if (g.board[2][0] + g.board[1][1] + g.board[0][2] == -3) return 2;
+    
     return 0;
 }
 
@@ -82,14 +81,14 @@ void displayGame(game g)
         } else {
             rowLabel = 'c';
         }
-        printf("%c  %c  |  %c  |  %c  \n _____|_____|_____\n      |     |     ",rowLabel, line[0],line[1],line[2]);
+        printf("%c  %c  |  %c  |  %c  \n _____|_____|_____\n      |     |     \n",rowLabel, line[0],line[1],line[2]);
     }
 }
 
 int main()
 {
     // Better initialization with clear structure
-    game g = {{0,0,0}, {0,0,0}, {0,0,0}};
+    game g = {{{0,0,0}, {0,0,0}, {0,0,0}}};
     int winner = 0;
     int count = 0;
     const char* set = "abcABC";  // Made const for safety
@@ -139,5 +138,6 @@ int main()
     } while (!winner);
 
     printf("Player %i Wins!\n", winner);  // Fixed printf format
+    displayGame(g);
     return 0;
 }
