@@ -21,55 +21,69 @@ A: At the end of each turn, we will run a checkWin function which will read play
 */
 
 /*
-   a     b     c
+   0     1     2
       |     |     
-1  -  |  -  |  -  
+a  -  |  -  |  -  
  _____|_____|_____
       |     |     
-2  -  |  -  |  -  
+b  -  |  -  |  -  
  _____|_____|_____
       |     |     
-3  -  |  -  |  -  
+c  -  |  -  |  -  
       |     |     
 */
 
-
-typedef struct {
-// num in [a, b, c]
-    int cols[3];
-// num in [1, 2, 3]
-    int rows[3];
-// num in [top left to bottom right, bottom left to top right]
-    int diag[2];
-} player;
-
-
-// This board is not used to check winner. Only used to render the board and check valid turns!
 typedef struct {
     int board[3][3];
 } game;
 
-typedef struct {
-    int r;
-    int c;
-} pair;
-
-int checkTurn(char c, int col) {
-    col = col--;
-    int row;
-    if (c == ('A' || 'a')) row = 0;
-    if (c == ('B' || 'B')) row = 1;
-
-}
-
 int checkWin(game g)
 {
+    // Check rows
+    if (abs(g.board[0][0] + g.board[0][1] + g.board[0][2]) == 3) return 1;
+    if (abs(g.board[1][0] + g.board[1][1] + g.board[1][2]) == 3) return 1;
+    if (abs(g.board[2][0] + g.board[2][1] + g.board[2][2]) == 3) return 1;
+
+    // Check columns
+    if (abs(g.board[0][0] + g.board[1][0] + g.board[2][0]) == 3) return 1;
+    if (abs(g.board[0][1] + g.board[1][1] + g.board[2][1]) == 3) return 1;
+    if (abs(g.board[0][2] + g.board[1][2] + g.board[2][2]) == 3) return 1;
+
+    // Check diagonals
+    if (abs(g.board[0][0] + g.board[1][1] + g.board[2][2]) == 3) return 1;
+    if (abs(g.board[2][0] + g.board[1][1] + g.board[0][2]) == 3) return 1;
+
     return 0;
 }
 
-void renderBoard(game g)
+void displayGame(game g)
 {
-
+    printf("   0     1     2\n      |     |     \n");
+    char line[3];
+    for (int r = 0; r < 3; r++) {
+        for (int c = 0; c < 3; c++) {
+            if (g.board[r][c] == 0) {
+                line[c] = '-';
+            }
+            else if (g.board[r][c] == -1)
+            {
+                line[c] = 'O';
+            } else {
+                line[c] = 'X';
+            }
+        }
+        char rowLabel;
+        if (r == 0) {
+            rowLabel = 'a';
+        }
+        else if (r == 1)
+        {
+            rowLabel = 'b';
+        } else {
+            rowLabel = 'c';
+        }
+        printf("%c  %c  |  %c  |  %c  \n _____|_____|_____\n      |     |     ",rowLabel, line[0],line[1],line[2]);
+    }
 }
 
 int main()
@@ -87,8 +101,7 @@ int main()
         char row;
         int col;
 
-        // Display current game state (assuming you have a displayGame function)
-        // displayGame(g);
+        displayGame(g);
 
         // Get row input
         printf("Player %i's Turn. Enter Row (a-c): ", curr);
@@ -111,8 +124,8 @@ int main()
             continue;  // Skip turn if position is taken
         }
 
-        // Update game state here
-        // updateGame(&g, &p1, &p2, row_idx, col, curr);
+        // Player 1 = 1 = X, Player 2 = -1 = O
+        g.board[row_idx][col] = (curr == 1) ? 1 : -1;
 
         count++;
         winner = checkWin(g);
